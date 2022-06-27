@@ -16,11 +16,11 @@ set(CMAKE_CXX_FLAGS "-g -O2 -finstrument-functions")
 
 find_package(ament_cuda)  # enable CUDA capabilities, if available
 find_package(ament_vitis)  # enable Vitis capabilities, if available
-if (DEFINED ROS_VITIS)  # NOTE, someone else must "find_package(ament_vitis)"
+if (ROS_VITIS)
   find_package(vitis_common)
   find_package(OpenCL REQUIRED)
   
-  if (DEFINED ROS_XRT)
+  if (ROS_XRT)
     # find_package(XRT REQUIRED)  # needs to be reviewed, issues with sysroot isolation
   endif()
 endif()
@@ -75,8 +75,7 @@ target_compile_definitions(resize
 rclcpp_components_register_nodes(resize "image_proc::ResizeNode")
 set(node_plugins "${node_plugins}image_proc::ResizeNode;$<TARGET_FILE:resize>\n")
 
-
-if (DEFINED ROS_VITIS)
+if (ROS_VITIS)
   # resize_fpga component (with OpenCL)
   ament_auto_add_library(resize_fpga SHARED src/resize_fpga.cpp)
   target_include_directories(resize_fpga PUBLIC
@@ -117,7 +116,7 @@ if (DEFINED ROS_VITIS)
   rclcpp_components_register_nodes(rectify_resize_fpga "image_proc::RectifyResizeNodeFPGA")
   set(node_plugins "${node_plugins}image_proc::RectifyResizeNodeFPGA;$<TARGET_FILE:rectify_resize_fpga>\n")
 
-  if (DEFINED ROS_XRT)
+  if (ROS_XRT)
     # rectify_resize_fpga_xrt component (integrated, with XRT) - 1 Component, 1 kernel
     ament_auto_add_library(rectify_resize_fpga_xrt SHARED src/rectify_resize_fpga_integrated_xrt.cpp)
     if (DEFINED CMAKE_SYSROOT)
@@ -162,7 +161,7 @@ if (DEFINED ROS_VITIS)
   rclcpp_components_register_nodes(rectify_resize_fpga_streamlined "image_proc::RectifyResizeNodeFPGAStreamlined")
   set(node_plugins "${node_plugins}image_proc::RectifyResizeNodeFPGAStreamlined;$<TARGET_FILE:rectify_resize_fpga_streamlined>\n")
 
-  if (DEFINED ROS_XRT)
+  if (ROS_XRT)
     # rectify_resize_fpga_streamlined_xrt component - 1 Component, 2 kernels
     ament_auto_add_library(rectify_resize_fpga_streamlined_xrt SHARED src/rectify_resize_fpga_streamlined_xrt.cpp)
     # TODO: figure out how to make proper use of XRT CMake integration instead
@@ -207,7 +206,7 @@ if (DEFINED ROS_VITIS)
   rclcpp_components_register_nodes(resize_fpga_streamlined "image_proc::ResizeNodeFPGAStreamlined")
   set(node_plugins "${node_plugins}image_proc::ResizeNodeFPGAStreamlined;$<TARGET_FILE:resize_fpga_streamlined>\n")
 
-  if (DEFINED ROS_XRT)
+  if (ROS_XRT)
     # rectify_fpga_streamlined_xrt component - 1 Kernel, 1 Component (part of group)
     ament_auto_add_library(rectify_fpga_streamlined_xrt SHARED src/rectify_fpga_streamlined_xrt.cpp)
     # TODO: figure out how to make proper use of XRT CMake integration instead
@@ -251,7 +250,7 @@ endif()  # ROS_VITIS
 # image_proc kernel, all kernels smashed into a single xclbin
 #
 if(ROS_ACCELERATION)
-  if (DEFINED ROS_VITIS)
+  if (ROS_VITIS)
     #####################
     # Synth
     #####################

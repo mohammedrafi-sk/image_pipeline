@@ -386,14 +386,18 @@ void RectifyNodeFPGA::imageCb(
     image_proc_rectify_cb_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   if (pub_rect_.getNumSubscribers() < 1) {
     TRACEPOINT(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -406,7 +410,9 @@ void RectifyNodeFPGA::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -427,7 +433,9 @@ void RectifyNodeFPGA::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -446,7 +454,9 @@ void RectifyNodeFPGA::imageCb(
     image_proc_rectify_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
   // model_.rectifyImage(image, rect, interpolation);  // CPU computation
   // model_.rectifyImageFPGA_debug(image, rect, gray);  // CPU and FPGA debug computations
   model_.rectifyImageFPGA(image, rect, gray);  // FPGA computation
@@ -454,7 +464,9 @@ void RectifyNodeFPGA::imageCb(
     image_proc_rectify_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   // Allocate new rectified image message
   sensor_msgs::msg::Image::SharedPtr rect_msg =
@@ -465,7 +477,9 @@ void RectifyNodeFPGA::imageCb(
     image_proc_rectify_cb_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 }
 
 }  // namespace image_proc

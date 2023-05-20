@@ -255,14 +255,18 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
     image_proc_rectify_cb_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -275,7 +279,9 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -296,7 +302,9 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -314,7 +322,9 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
     image_proc_rectify_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   // // Rectify
   // model_.rectifyImageFPGA(image, rect, gray);  // rectify FPGA computation
@@ -413,7 +423,9 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
     image_proc_rectify_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   // Set the output image
   cv_bridge::CvImage output_image;
@@ -443,7 +455,9 @@ void RectifyResizeNodeFPGAStreamlinedXRT::imageCb(
     image_proc_rectify_cb_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 }
 
 }  // namespace image_proc

@@ -107,7 +107,9 @@ void PinholeCameraModelFPGAIntegrated::rectifyResizeImageFPGA(
     image_proc_rectify_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   assert(initialized());
 
@@ -222,7 +224,9 @@ void PinholeCameraModelFPGAIntegrated::rectifyResizeImageFPGA(
     image_proc_rectify_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 }
 
 }  // namespace image_geometry
@@ -280,14 +284,18 @@ void RectifyResizeNodeFPGA::imageCb(
     image_proc_rectify_cb_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -300,7 +308,9 @@ void RectifyResizeNodeFPGA::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -321,7 +331,9 @@ void RectifyResizeNodeFPGA::imageCb(
       image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -337,7 +349,9 @@ void RectifyResizeNodeFPGA::imageCb(
       image_proc_resize_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -414,7 +428,9 @@ void RectifyResizeNodeFPGA::imageCb(
     image_proc_rectify_cb_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 }
 
 }  // namespace image_proc

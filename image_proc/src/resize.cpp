@@ -76,14 +76,18 @@ void ResizeNode::imageCb(
     image_proc_resize_cb_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
       image_proc_resize_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -96,13 +100,17 @@ void ResizeNode::imageCb(
       image_proc_resize_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     TRACEPOINT(
       image_proc_resize_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
-      static_cast<const void *>(&(*info_msg)));
+      static_cast<const void *>(&(*info_msg)),
+      image_msg->header.stamp.nanosec,
+      image_msg->header.stamp.sec);
     return;
   }
 
@@ -110,7 +118,9 @@ void ResizeNode::imageCb(
     image_proc_resize_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
   if (use_scale_) {
     cv::resize(
       cv_ptr->image, cv_ptr->image, cv::Size(0, 0), scale_width_,
@@ -124,7 +134,9 @@ void ResizeNode::imageCb(
     image_proc_resize_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 
   sensor_msgs::msg::CameraInfo::SharedPtr dst_info_msg =
     std::make_shared<sensor_msgs::msg::CameraInfo>(*info_msg);
@@ -161,7 +173,9 @@ void ResizeNode::imageCb(
     image_proc_resize_cb_fini,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)));
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
 }
 
 }  // namespace image_proc

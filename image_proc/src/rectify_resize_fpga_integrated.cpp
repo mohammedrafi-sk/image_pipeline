@@ -1,4 +1,28 @@
 /*
+   @@@@@@@@@@@@@@@@@@@@
+   @@@@@@@@@&@@@&&@@@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@ Copyright (c) 2023, Acceleration Robotics®
+   @@@@@ @@  @@    @@@@ Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+   @@@@@ @@  @@    @@@@ 
+   @@@@@@@@@&@@@@@@@@@@
+   @@@@@@@@@@@@@@@@@@@@
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. 
+*/
+
+/*
       ____  ____
      /   /\/   /
     /___/  \  /   Copyright (c) 2021, Xilinx®.
@@ -34,6 +58,7 @@
 
 #include "image_proc/rectify_resize_fpga_integrated.hpp"
 #include "tracetools_image_pipeline/tracetools.h"
+#include <rclcpp/serialization.hpp>
 
 namespace image_geometry
 {
@@ -102,6 +127,19 @@ void PinholeCameraModelFPGAIntegrated::rectifyResizeImageFPGA(
   sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg,
   bool gray) const
 {
+    //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
+  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
+  image_serialization.serialize_message(image_ptr, &serialized_data_img);
+  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
+  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
+  info_serialization.serialize_message(info_ptr, &serialized_data_info);
+  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
+  
   // Rectify and resize
   TRACEPOINT(
     image_proc_rectify_init,
@@ -109,7 +147,9 @@ void PinholeCameraModelFPGAIntegrated::rectifyResizeImageFPGA(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 
   assert(initialized());
 
@@ -226,7 +266,9 @@ void PinholeCameraModelFPGAIntegrated::rectifyResizeImageFPGA(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 }
 
 }  // namespace image_geometry
@@ -279,6 +321,18 @@ void RectifyResizeNodeFPGA::imageCb(
   const sensor_msgs::msg::Image::ConstSharedPtr & image_msg,
   const sensor_msgs::msg::CameraInfo::ConstSharedPtr & info_msg)
 {
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
+  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
+  image_serialization.serialize_message(image_ptr, &serialized_data_img);
+  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
+  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
+  info_serialization.serialize_message(info_ptr, &serialized_data_info);
+  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
 
   TRACEPOINT(
     image_proc_rectify_cb_init,
@@ -286,7 +340,9 @@ void RectifyResizeNodeFPGA::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
@@ -295,7 +351,9 @@ void RectifyResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -310,7 +368,9 @@ void RectifyResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -333,7 +393,9 @@ void RectifyResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -351,7 +413,9 @@ void RectifyResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -430,7 +494,9 @@ void RectifyResizeNodeFPGA::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 }
 
 }  // namespace image_proc

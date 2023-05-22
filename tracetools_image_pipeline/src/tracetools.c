@@ -1,3 +1,27 @@
+/*
+   @@@@@@@@@@@@@@@@@@@@
+   @@@@@@@@@&@@@&&@@@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@ Copyright (c) 2023, Acceleration Robotics®
+   @@@@@ @@  @@    @@@@ Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+   @@@@@ @@  @@    @@@@ 
+   @@@@@@@@@&@@@@@@@@@@
+   @@@@@@@@@@@@@@@@@@@@
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. 
+*/
+
 // Copyright 2021 Víctor Mayoral-Vilches
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +72,9 @@ void TRACEPOINT(
   const void * resize_image_msg_arg,
   const void * resize_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t resize_image_msg_size_arg,
+  size_t resize_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_resize_cb_init,
@@ -56,7 +82,9 @@ void TRACEPOINT(
     resize_image_msg_arg,
     resize_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    resize_image_msg_size_arg,
+    resize_info_msg_size_arg);
 
 }
 void TRACEPOINT(
@@ -65,7 +93,9 @@ void TRACEPOINT(
   const void * resize_image_msg_arg,
   const void * resize_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t resize_image_msg_size_arg,
+  size_t resize_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_resize_cb_fini,
@@ -73,7 +103,9 @@ void TRACEPOINT(
     resize_image_msg_arg,
     resize_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    resize_image_msg_size_arg,
+    resize_info_msg_size_arg);
 }
 void TRACEPOINT(
   image_proc_resize_init,
@@ -81,7 +113,9 @@ void TRACEPOINT(
   const void * resize_image_msg_arg,
   const void * resize_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t resize_image_msg_size_arg,
+  size_t resize_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_resize_init,
@@ -89,7 +123,9 @@ void TRACEPOINT(
     resize_image_msg_arg,
     resize_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    resize_image_msg_size_arg,
+    resize_info_msg_size_arg);
 }
 void TRACEPOINT(
   image_proc_resize_fini,
@@ -97,7 +133,9 @@ void TRACEPOINT(
   const void * resize_image_msg_arg,
   const void * resize_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t resize_image_msg_size_arg,
+  size_t resize_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_resize_fini,
@@ -105,7 +143,9 @@ void TRACEPOINT(
     resize_image_msg_arg,
     resize_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    resize_image_msg_size_arg,
+    resize_info_msg_size_arg);
 }
 
 // rectify
@@ -115,7 +155,9 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_rectify_cb_init,
@@ -123,7 +165,9 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
 }
 void TRACEPOINT(
   image_proc_rectify_cb_fini,
@@ -131,7 +175,9 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_rectify_cb_fini,
@@ -139,7 +185,10 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg, 
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
+    
 }
 void TRACEPOINT(
   image_proc_rectify_init,
@@ -147,7 +196,9 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_rectify_init,
@@ -155,7 +206,9 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
 }
 void TRACEPOINT(
   image_proc_rectify_fini,
@@ -163,7 +216,10 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
+  
 {
   CONDITIONAL_TP(
     image_proc_rectify_fini,
@@ -171,7 +227,9 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
 }
 
 // harris
@@ -181,7 +239,9 @@ void TRACEPOINT(
   const void * harris_image_msg_arg,
   const void * harris_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t harris_image_msg_size_arg,
+  size_t harris_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_harris_cb_init,
@@ -189,7 +249,9 @@ void TRACEPOINT(
     harris_image_msg_arg,
     harris_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    harris_image_msg_size_arg,
+    harris_info_msg_size_arg);
 }
 
 void TRACEPOINT(
@@ -198,7 +260,9 @@ void TRACEPOINT(
   const void * harris_image_msg_arg,
   const void * harris_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t harris_image_msg_size_arg,
+  size_t harris_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_harris_cb_fini,
@@ -206,7 +270,9 @@ void TRACEPOINT(
     harris_image_msg_arg,
     harris_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    harris_image_msg_size_arg,
+    harris_info_msg_size_arg);
 }
 
 void TRACEPOINT(
@@ -215,7 +281,9 @@ void TRACEPOINT(
   const void * harris_image_msg_arg,
   const void * harris_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t harris_image_msg_size_arg,
+  size_t harris_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_harris_init,
@@ -223,7 +291,9 @@ void TRACEPOINT(
     harris_image_msg_arg,
     harris_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    harris_image_msg_size_arg,
+    harris_info_msg_size_arg);
 }
 
 void TRACEPOINT(
@@ -232,7 +302,9 @@ void TRACEPOINT(
   const void * harris_image_msg_arg,
   const void * harris_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t harris_image_msg_size_arg,
+  size_t harris_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_harris_fini,
@@ -240,7 +312,9 @@ void TRACEPOINT(
     harris_image_msg_arg,
     harris_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    harris_image_msg_size_arg,
+    harris_info_msg_size_arg);
 }
 
 // rectify_resize
@@ -250,7 +324,9 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_rectify_resize_cb_init,
@@ -258,7 +334,9 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
 }
 
 void TRACEPOINT(
@@ -267,7 +345,9 @@ void TRACEPOINT(
   const void * rectify_image_msg_arg,
   const void * rectify_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t rectify_image_msg_size_arg,
+  size_t rectify_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     image_proc_rectify_resize_cb_fini,
@@ -275,7 +355,9 @@ void TRACEPOINT(
     rectify_image_msg_arg,
     rectify_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    rectify_image_msg_size_arg,
+    rectify_info_msg_size_arg);
 }
 
 #ifndef _WIN32

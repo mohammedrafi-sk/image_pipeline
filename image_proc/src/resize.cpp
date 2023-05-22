@@ -1,3 +1,27 @@
+/*
+   @@@@@@@@@@@@@@@@@@@@
+   @@@@@@@@@&@@@&&@@@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@
+   @@@@@ @@  @@    @@@@ Copyright (c) 2023, Acceleration Robotics®
+   @@@@@ @@  @@    @@@@ Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+   @@@@@ @@  @@    @@@@ 
+   @@@@@@@@@&@@@@@@@@@@
+   @@@@@@@@@@@@@@@@@@@@
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. 
+*/
+
 // Copyright 2017, 2019 Kentaro Wada, Joshua Whitley
 // All rights reserved.
 //
@@ -43,6 +67,7 @@
 
 #include "tracetools_image_pipeline/tracetools.h"
 #include "image_proc/resize.hpp"
+#include <rclcpp/serialization.hpp>
 
 namespace image_proc
 {
@@ -72,13 +97,28 @@ void ResizeNode::imageCb(
   sensor_msgs::msg::Image::ConstSharedPtr image_msg,
   sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg)
 {
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
+  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
+  image_serialization.serialize_message(image_ptr, &serialized_data_img);
+  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
+  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
+  info_serialization.serialize_message(info_ptr, &serialized_data_info);
+  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
+  
   TRACEPOINT(
     image_proc_resize_cb_init,
     static_cast<const void *>(this),
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
@@ -87,7 +127,9 @@ void ResizeNode::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -102,7 +144,9 @@ void ResizeNode::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     TRACEPOINT(
       image_proc_resize_cb_fini,
@@ -110,7 +154,9 @@ void ResizeNode::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      image_msg_size,
+      info_msg_size);
     return;
   }
 
@@ -120,7 +166,9 @@ void ResizeNode::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
   if (use_scale_) {
     cv::resize(
       cv_ptr->image, cv_ptr->image, cv::Size(0, 0), scale_width_,
@@ -136,7 +184,9 @@ void ResizeNode::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 
   sensor_msgs::msg::CameraInfo::SharedPtr dst_info_msg =
     std::make_shared<sensor_msgs::msg::CameraInfo>(*info_msg);
@@ -175,7 +225,9 @@ void ResizeNode::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    image_msg_size,
+    info_msg_size);
 }
 
 }  // namespace image_proc

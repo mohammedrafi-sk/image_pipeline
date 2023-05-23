@@ -111,19 +111,7 @@ void PinholeCameraModelFPGAIntegratedXRT::rectifyResizeImageFPGA(
   sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg,
   bool gray) const
 {
-  //Serialize the Image and CameraInfo messages
-  rclcpp::SerializedMessage serialized_data_img;
-  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
-  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
-  image_serialization.serialize_message(image_ptr, &serialized_data_img);
-  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
-  
-  rclcpp::SerializedMessage serialized_data_info;
-  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
-  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
-  info_serialization.serialize_message(info_ptr, &serialized_data_info);
-  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
-  
+    
   // Rectify and resize
   TRACEPOINT(
     image_proc_rectify_init,
@@ -131,9 +119,7 @@ void PinholeCameraModelFPGAIntegratedXRT::rectifyResizeImageFPGA(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
 
   assert(initialized());
 
@@ -258,9 +244,7 @@ void PinholeCameraModelFPGAIntegratedXRT::rectifyResizeImageFPGA(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
 
 }
 }  // namespace image_geometry
@@ -481,15 +465,31 @@ void RectifyResizeNodeFPGAXRT::imageCb(
   }
 
   pub_image_.publish(*output_image.toImageMsg(), *dst_info_msg);
+  
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_output_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> output_image_serialization;
+  const void* output_image_ptr = reinterpret_cast<const void*>(output_image.toImageMsg().get());
+  output_image_serialization.serialize_message(output_image_ptr, &serialized_data_output_img);
+  size_t output_image_msg_size = serialized_data_output_img.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_dst_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
+  const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
+  dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
+  size_t dst_info_msg_size = serialized_data_dst_info.get_rcl_serialized_message().buffer_length;
+  
+  
+  
   TRACEPOINT(
     image_proc_rectify_cb_fini,
     static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
+    static_cast<const void *>(&(*output_image.toImageMsg())),
+    static_cast<const void *>(&(*dst_info_msg)),
     image_msg->header.stamp.nanosec,
     image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    output_image_msg_size,
+    dst_info_msg_size);
 }
 
 }  // namespace image_proc

@@ -114,9 +114,7 @@ TRACEPOINT_EVENT(
     const void *, resize_image_msg_arg,
     const void *, resize_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, resize_image_msg_size_arg,
-    size_t, resize_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     // output event fields, see https://lttng.org/man/3/lttng-ust/v2.12/#doc-ctf-macros
     ctf_integer_hex(const void *, resize_node, resize_node_arg)
@@ -124,8 +122,6 @@ TRACEPOINT_EVENT(
     ctf_integer_hex(const void *, resize_info_msg, resize_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, resize_image_msg_size, resize_image_msg_size_arg)
-    ctf_integer(size_t, resize_info_msg_size, resize_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -138,17 +134,13 @@ TRACEPOINT_EVENT(
     const void *, resize_image_msg_arg,
     const void *, resize_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, resize_image_msg_size_arg,
-    size_t, resize_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, resize_node, resize_node_arg)
     ctf_integer_hex(const void *, resize_image_msg, resize_image_msg_arg)
     ctf_integer_hex(const void *, resize_info_msg, resize_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, resize_image_msg_size, resize_image_msg_size_arg)
-    ctf_integer(size_t, resize_info_msg_size, resize_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -210,17 +202,13 @@ TRACEPOINT_EVENT(
     const void *, rectify_image_msg_arg,
     const void *, rectify_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, rectify_image_msg_size_arg,
-    size_t, rectify_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, rectify_node, rectify_node_arg)
     ctf_integer_hex(const void *, rectify_image_msg, rectify_image_msg_arg)
     ctf_integer_hex(const void *, rectify_info_msg, rectify_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, rectify_image_msg_size, rectify_image_msg_size_arg)
-    ctf_integer(size_t, rectify_info_msg_size, rectify_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -233,17 +221,13 @@ TRACEPOINT_EVENT(
     const void *, rectify_image_msg_arg,
     const void *, rectify_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, rectify_image_msg_size_arg,
-    size_t, rectify_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, rectify_node, rectify_node_arg)
     ctf_integer_hex(const void *, rectify_image_msg, rectify_image_msg_arg)
     ctf_integer_hex(const void *, rectify_info_msg, rectify_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, rectify_image_msg_size, rectify_image_msg_size_arg)
-    ctf_integer(size_t, rectify_info_msg_size, rectify_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -305,17 +289,13 @@ TRACEPOINT_EVENT(
     const void *, harris_image_msg_arg,
     const void *, harris_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, harris_image_msg_size_arg,
-    size_t, harris_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, harris_node, harris_node_arg)
     ctf_integer_hex(const void *, harris_image_msg, harris_image_msg_arg)
     ctf_integer_hex(const void *, harris_info_msg, harris_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, harris_image_msg_size, harris_image_msg_size_arg)
-    ctf_integer(size_t, harris_info_msg_size, harris_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -328,17 +308,13 @@ TRACEPOINT_EVENT(
     const void *, harris_image_msg_arg,
     const void *, harris_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg,
-    size_t, harris_image_msg_size_arg,
-    size_t, harris_info_msg_size_arg),
+    uint32_t, image_input_header_sec_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, harris_node, harris_node_arg)
     ctf_integer_hex(const void *, harris_image_msg, harris_image_msg_arg)
     ctf_integer_hex(const void *, harris_info_msg, harris_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
-    ctf_integer(size_t, harris_image_msg_size, harris_image_msg_size_arg)
-    ctf_integer(size_t, harris_info_msg_size, harris_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )

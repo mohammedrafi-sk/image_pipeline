@@ -428,6 +428,44 @@ void RectifyResizeNodeFPGAStreamlined::resizeImageFPGA(
 
   queue_->finish();
   pub_image_.publish(*output_image.toImageMsg(), *dst_info_msg);
+
+  // TRACEPOINT(
+  //   image_proc_resize_fini,
+  //   static_cast<const void *>(this),
+  //   static_cast<const void *>(&(*image_msg)),
+  //   static_cast<const void *>(&(*info_msg)));
+
+  TRACEPOINT(
+    image_proc_rectify_fini,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*image_msg)),
+    static_cast<const void *>(&(*info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec);
+
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_output_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> output_image_serialization;
+  const void* output_image_ptr = reinterpret_cast<const void*>(output_image.toImageMsg().get());
+  output_image_serialization.serialize_message(output_image_ptr, &serialized_data_output_img);
+  size_t output_image_msg_size = serialized_data_output_img.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_dst_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
+  const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
+  dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
+  size_t dst_info_msg_size = serialized_data_dst_info.get_rcl_serialized_message().buffer_length;
+  
+  // Wrap it
+  TRACEPOINT(
+    image_proc_rectify_cb_fini,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*output_image.toImageMsg())),
+    static_cast<const void *>(&(*dst_info_msg)),
+    image_msg->header.stamp.nanosec,
+    image_msg->header.stamp.sec,
+    output_image_msg_size,
+    dst_info_msg_size);
 }
 
 void RectifyResizeNodeFPGAStreamlined::imageCb(
@@ -530,9 +568,7 @@ void RectifyResizeNodeFPGAStreamlined::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
   model_.rectifyImageFPGA(image, rect, gray);  // rectify FPGA computation
 
   // Resize
@@ -540,38 +576,9 @@ void RectifyResizeNodeFPGAStreamlined::imageCb(
   //   image_proc_resize_init,
   //   static_cast<const void *>(this),
   //   static_cast<const void *>(&(*image_msg)),
-  //   static_cast<const void *>(&(*info_msg)),
-  //   image_msg_size,
-  //   info_msg_size);
+  //   static_cast<const void *>(&(*info_msg)));
   resizeImageFPGA(image_msg, info_msg, gray);  // resize FPGA computation
-  // TRACEPOINT(
-  //   image_proc_resize_fini,
-  //   static_cast<const void *>(this),
-  //   static_cast<const void *>(&(*image_msg)),
-  //   static_cast<const void *>(&(*info_msg)),
-  //   image_msg_size,
-  //   info_msg_size);
-
-  TRACEPOINT(
-    image_proc_rectify_fini,
-    static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
-    image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
-
-  // Wrap it
-  TRACEPOINT(
-    image_proc_rectify_cb_fini,
-    static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
-    image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+  
 }
 
 }  // namespace image_proc

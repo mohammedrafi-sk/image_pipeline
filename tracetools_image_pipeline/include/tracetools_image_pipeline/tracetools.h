@@ -142,8 +142,6 @@ DECLARE_TRACEPOINT(
  * \param[in] harris_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
- * \param[in] harris_image_msg_size size of image ROS message stored as bytes
- * \param[in] harris_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_harris_init,
@@ -151,9 +149,7 @@ DECLARE_TRACEPOINT(
   const void * harris_image_msg,
   const void * harris_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t harris_image_msg_size,
-  size_t harris_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_harris_fini`
 /**
@@ -166,8 +162,6 @@ DECLARE_TRACEPOINT(
  * \param[in] harris_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
- * \param[in] harris_image_msg_size size of image ROS message stored as bytes
- * \param[in] harris_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_harris_fini,
@@ -175,9 +169,7 @@ DECLARE_TRACEPOINT(
   const void * harris_image_msg,
   const void * harris_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t harris_image_msg_size,
-  size_t harris_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_resize_cb_init`
 /**
@@ -238,8 +230,6 @@ DECLARE_TRACEPOINT(
  * \param[in] resize_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
- * \param[in] resize_image_msg_size size of image ROS message stored as bytes
- * \param[in] resize_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_resize_init,
@@ -247,9 +237,7 @@ DECLARE_TRACEPOINT(
   const void * resize_image_msg,
   const void * resize_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t resize_image_msg_size,
-  size_t resize_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_resize_fini`
 /**
@@ -262,8 +250,6 @@ DECLARE_TRACEPOINT(
  * \param[in] resize_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
- * \param[in] resize_image_msg_size size of image ROS message stored as bytes
- * \param[in] resize_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_resize_fini,
@@ -271,9 +257,7 @@ DECLARE_TRACEPOINT(
   const void * resize_image_msg,
   const void * resize_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t resize_image_msg_size,
-  size_t resize_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_rectify_cb_init`
 /**
@@ -334,8 +318,6 @@ DECLARE_TRACEPOINT(
  * \param[in] rectify_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
- * \param[in] rectify_image_msg_size size of image ROS message stored as bytes
- * \param[in] rectify_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_rectify_init,
@@ -343,9 +325,7 @@ DECLARE_TRACEPOINT(
   const void * rectify_image_msg,
   const void * rectify_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t rectify_image_msg_size,
-  size_t rectify_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_rectify_fini`
 /**
@@ -358,8 +338,6 @@ DECLARE_TRACEPOINT(
  * \param[in] rectify_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
- * \param[in] rectify_image_msg_size size of image ROS message stored as bytes
- * \param[in] rectify_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   image_proc_rectify_fini,
@@ -367,9 +345,7 @@ DECLARE_TRACEPOINT(
   const void * rectify_image_msg,
   const void * rectify_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg,
-  size_t rectify_image_msg_size,
-  size_t rectify_info_msg_size)
+  uint32_t image_input_header_sec_arg)
 
 /// `image_proc_rectify_resize_cb_init`
 /**

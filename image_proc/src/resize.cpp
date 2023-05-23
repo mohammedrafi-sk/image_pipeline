@@ -166,9 +166,7 @@ void ResizeNode::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
   if (use_scale_) {
     cv::resize(
       cv_ptr->image, cv_ptr->image, cv::Size(0, 0), scale_width_,
@@ -184,9 +182,7 @@ void ResizeNode::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
 
   sensor_msgs::msg::CameraInfo::SharedPtr dst_info_msg =
     std::make_shared<sensor_msgs::msg::CameraInfo>(*info_msg);
@@ -219,15 +215,28 @@ void ResizeNode::imageCb(
 
   pub_image_.publish(*cv_ptr->toImageMsg(), *dst_info_msg);
 
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_rect;
+  rclcpp::Serialization<sensor_msgs::msg::Image> rect_image_serialization;
+  const void* rect_image_ptr = reinterpret_cast<const void*>(cv_ptr->toImageMsg().get());
+  rect_image_serialization.serialize_message(rect_image_ptr, &serialized_data_rect);
+  size_t rect_msg_size = serialized_data_rect.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_dst_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
+  const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
+  dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
+  size_t dst_info_msg_size = serialized_data_dst_info.get_rcl_serialized_message().buffer_length;
+
   TRACEPOINT(
     image_proc_resize_cb_fini,
     static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
+    static_cast<const void *>(&(*cv_ptr->toImageMsg())),
+    static_cast<const void *>(&(*dst_info_msg)),
     image_msg->header.stamp.nanosec,
     image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    rect_msg_size,
+    dst_info_msg_size);
 }
 
 }  // namespace image_proc

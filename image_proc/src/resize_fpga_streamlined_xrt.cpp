@@ -191,9 +191,7 @@ void ResizeNodeFPGAStreamlinedXRT::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
 
   size_t image_out_size_count, image_out_size_bytes;
   if (gray) {
@@ -269,21 +267,33 @@ void ResizeNodeFPGAStreamlinedXRT::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    image_msg->header.stamp.sec);
 
   pub_image_.publish(*output_image.toImageMsg(), *dst_info_msg);
+
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_out;
+  rclcpp::Serialization<sensor_msgs::msg::Image> out_image_serialization;
+  const void* out_image_ptr = reinterpret_cast<const void*>(output_image.toImageMsg().get());
+  out_image_serialization.serialize_message(out_image_ptr, &serialized_data_out);
+  size_t out_msg_size = serialized_data_out.get_rcl_serialized_message().buffer_length;
+  
+  rclcpp::SerializedMessage serialized_data_dst_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
+  const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
+  dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
+  size_t dst_info_msg_size = serialized_data_dst_info.get_rcl_serialized_message().buffer_length;
+
 
   TRACEPOINT(
     image_proc_resize_cb_fini,
     static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
+    static_cast<const void *>(&(*output_image.toImageMsg())),
+    static_cast<const void *>(&(*dst_info_msg)),
     image_msg->header.stamp.nanosec,
     image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    out_msg_size,
+    dst_info_msg_size);
 }
 
 }  // namespace image_proc

@@ -131,13 +131,13 @@ void ResizeNodeFPGA::imageCb(
   rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
   const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
   image_serialization.serialize_message(image_ptr, &serialized_data_img);
-  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
+  size_t image_msg_size = serialized_data_img.size();
   
   rclcpp::SerializedMessage serialized_data_info;
   rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
   const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
   info_serialization.serialize_message(info_ptr, &serialized_data_info);
-  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
+  size_t info_msg_size = serialized_data_info.size();
   
   TRACEPOINT(
     image_proc_resize_cb_init,
@@ -333,13 +333,13 @@ void ResizeNodeFPGA::imageCb(
   rclcpp::Serialization<sensor_msgs::msg::Image> out_image_serialization;
   const void* out_image_ptr = reinterpret_cast<const void*>(output_image.toImageMsg().get());
   out_image_serialization.serialize_message(out_image_ptr, &serialized_data_out);
-  size_t out_msg_size = serialized_data_out.get_rcl_serialized_message().buffer_length;
+  size_t out_msg_size = serialized_data_out.size();
   
   rclcpp::SerializedMessage serialized_data_dst_info;
   rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
   const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
   dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
-  size_t dst_info_msg_size = serialized_data_dst_info.get_rcl_serialized_message().buffer_length;
+  size_t dst_info_msg_size = serialized_data_dst_info.size();
 
 
   TRACEPOINT(

@@ -108,13 +108,13 @@ void RectifyNode::imageCb(
   rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
   const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
   image_serialization.serialize_message(image_ptr, &serialized_data_img);
-  size_t image_msg_size = serialized_data_img.get_rcl_serialized_message().buffer_length;
+  size_t image_msg_size = serialized_data_img.size();
   
   rclcpp::SerializedMessage serialized_data_info;
   rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
   const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
   info_serialization.serialize_message(info_ptr, &serialized_data_info);
-  size_t info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
+  size_t info_msg_size = serialized_data_info.size();
   
   TRACEPOINT(
     image_proc_rectify_cb_init,
@@ -215,11 +215,11 @@ void RectifyNode::imageCb(
   rclcpp::Serialization<sensor_msgs::msg::Image> rect_image_serialization;
   const void* rect_image_ptr = reinterpret_cast<const void*>(rect_msg.get());
   rect_image_serialization.serialize_message(rect_image_ptr, &serialized_data_rect);
-  size_t rect_msg_size = serialized_data_rect.get_rcl_serialized_message().buffer_length;
+  size_t rect_msg_size = serialized_data_rect.size();
   
   info_ptr = reinterpret_cast<const void*>(info_msg.get());
   info_serialization.serialize_message(info_ptr, &serialized_data_info);
-  info_msg_size = serialized_data_info.get_rcl_serialized_message().buffer_length;
+  info_msg_size = serialized_data_info.size();
 
   TRACEPOINT(
     image_proc_rectify_cb_fini,

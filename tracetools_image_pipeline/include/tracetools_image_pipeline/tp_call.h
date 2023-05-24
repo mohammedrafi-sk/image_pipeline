@@ -312,6 +312,92 @@ TRACEPOINT_EVENT(
   )
 )
 
+// depth_image_proc point_cloud_xyzrgb init callback
+TRACEPOINT_EVENT(
+  TRACEPOINT_PROVIDER,
+  depth_image_proc_transform_to_pointcloud_cb_init,
+  TP_ARGS(
+    const void *, point_cloud_xyzrgb_node_arg,
+    const void *, point_cloud_xyzrgb_depth_image_msg_arg,
+    const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
+    const void *, point_cloud_xyzrgb_info_msg_arg,
+    uint32_t, image_input_header_nsec_arg,
+    uint32_t, image_input_header_sec_arg),
+  TP_FIELDS(
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_rgb_image_msg, point_cloud_xyzrgb_rgb_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
+    ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
+    ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_string(version, tracetools_image_pipeline_VERSION)
+  )
+)
+// depth_image_proc point_cloud_xyzrgb end of callback (after publication)
+TRACEPOINT_EVENT(
+  TRACEPOINT_PROVIDER,
+  depth_image_proc_transform_to_pointcloud_cb_fini,
+  TP_ARGS(
+    const void *, point_cloud_xyzrgb_node_arg,
+    const void *, point_cloud_xyzrgb_depth_image_msg_arg,
+    const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
+    const void *, point_cloud_xyzrgb_info_msg_arg,
+    uint32_t, image_input_header_nsec_arg,
+    uint32_t, image_input_header_sec_arg),
+  TP_FIELDS(
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_rgb_image_msg, point_cloud_xyzrgb_rgb_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
+    ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
+    ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_string(version, tracetools_image_pipeline_VERSION)
+  )
+)
+
+// depth_image_proc point_cloud_xyzrgb init
+TRACEPOINT_EVENT(
+  TRACEPOINT_PROVIDER,
+  depth_image_proc_transform_to_pointcloud_init,
+  TP_ARGS(
+    const void *, point_cloud_xyzrgb_node_arg,
+    const void *, point_cloud_xyzrgb_depth_image_msg_arg,
+    const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
+    const void *, point_cloud_xyzrgb_info_msg_arg,
+    uint32_t, image_input_header_nsec_arg,
+    uint32_t, image_input_header_sec_arg),
+  TP_FIELDS(
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_rgb_image_msg, point_cloud_xyzrgb_rgb_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
+    ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
+    ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_string(version, tracetools_image_pipeline_VERSION)
+  )
+)
+// depth_image_proc point_cloud_xyzrgb end of (after having created the pointcloud)
+TRACEPOINT_EVENT(
+  TRACEPOINT_PROVIDER,
+  depth_image_proc_transform_to_pointcloud_fini,
+  TP_ARGS(
+    const void *, point_cloud_xyzrgb_node_arg,
+    const void *, point_cloud_xyzrgb_depth_image_msg_arg,
+    const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
+    const void *, point_cloud_xyzrgb_info_msg_arg,
+    uint32_t, image_input_header_nsec_arg,
+    uint32_t, image_input_header_sec_arg),
+  TP_FIELDS(
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_rgb_image_msg, point_cloud_xyzrgb_rgb_image_msg_arg)
+    ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
+    ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
+    ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_string(version, tracetools_image_pipeline_VERSION)
+  )
+)
+
 #endif  // _TRACETOOLS_IMAGE_PIPELINE__TP_CALL_H_
 
 #include <lttng/tracepoint-event.h>

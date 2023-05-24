@@ -339,6 +339,94 @@ DECLARE_TRACEPOINT(
   uint32_t image_input_header_nsec_arg,
   uint32_t image_input_header_sec_arg)
 
+/// `depth_image_proc_transform_to_pointcloud_cb_init`
+/**
+ * Tracepoint while initiating the RGBd to pointcloud operation
+ *
+ * Notes the `tracetools_image_pipeline` version automatically.
+ *
+ * \param[in] point_cloud_xyzrgb_node rclcpp::node::Node subject to the callback
+ * \param[in] point_cloud_xyzrgb_depth_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_rgb_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
+ * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
+ * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ */
+DECLARE_TRACEPOINT(
+  depth_image_proc_transform_to_pointcloud_cb_init,
+  const void * point_cloud_xyzrgb_node,
+  const void * point_cloud_xyzrgb_depth_image_msg,
+  const void * point_cloud_xyzrgb_rgb_image_msg,
+  const void * point_cloud_xyzrgb_info_msg,
+  uint32_t image_input_header_nsec_arg,
+  uint32_t image_input_header_sec_arg)
+
+/// `depth_image_proc_transform_to_pointcloud_cb_fini`
+/**
+ * Tracepoint while initiating the RGBd to pointcloud operation
+ *
+ * Notes the `tracetools_image_pipeline` version automatically.
+ *
+ * \param[in] point_cloud_xyzrgb_node rclcpp::node::Node subject to the callback
+ * \param[in] point_cloud_xyzrgb_depth_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_rgb_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
+ * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
+ * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ */
+DECLARE_TRACEPOINT(
+  depth_image_proc_transform_to_pointcloud_cb_fini,
+  const void * point_cloud_xyzrgb_node,
+  const void * point_cloud_xyzrgb_depth_image_msg,
+  const void * point_cloud_xyzrgb_rgb_image_msg,
+  const void * point_cloud_xyzrgb_info_msg,
+  uint32_t image_input_header_nsec_arg,
+  uint32_t image_input_header_sec_arg)
+
+/// `depth_image_proc_transform_to_pointcloud_init`
+/**
+ * Tracepoint while initiating the RGBd to pointcloud operation
+ *
+ * Notes the `tracetools_image_pipeline` version automatically.
+ *
+ * \param[in] point_cloud_xyzrgb_node rclcpp::node::Node subject to the callback
+ * \param[in] point_cloud_xyzrgb_depth_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_rgb_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
+ * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
+ * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ */
+DECLARE_TRACEPOINT(
+  depth_image_proc_transform_to_pointcloud_init,
+  const void * point_cloud_xyzrgb_node,
+  const void * point_cloud_xyzrgb_depth_image_msg,
+  const void * point_cloud_xyzrgb_rgb_image_msg,
+  const void * point_cloud_xyzrgb_info_msg,
+  uint32_t image_input_header_nsec_arg,
+  uint32_t image_input_header_sec_arg)
+
+/// `depth_image_proc_transform_to_pointcloud_fini`
+/**
+ * Tracepoint while initiating the RGBd to pointcloud operation
+ *
+ * Notes the `tracetools_image_pipeline` version automatically.
+ *
+ * \param[in] point_cloud_xyzrgb_node rclcpp::node::Node subject to the callback
+ * \param[in] point_cloud_xyzrgb_depth_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_rgb_image_msg image ROS message stored as sensor_msgs::msg::Image::ConstSharedPtr
+ * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
+ * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
+ * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ */
+DECLARE_TRACEPOINT(
+  depth_image_proc_transform_to_pointcloud_fini,
+  const void * point_cloud_xyzrgb_node,
+  const void * point_cloud_xyzrgb_depth_image_msg,
+  const void * point_cloud_xyzrgb_rgb_image_msg,
+  const void * point_cloud_xyzrgb_info_msg,
+  uint32_t image_input_header_nsec_arg,
+  uint32_t image_input_header_sec_arg)
+
 #ifdef __cplusplus
 }
 #endif

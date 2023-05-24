@@ -1,28 +1,7 @@
 /*
-   @@@@@@@@@@@@@@@@@@@@
-   @@@@@@@@@&@@@&&@@@@@
-   @@@@@ @@  @@    @@@@
-   @@@@@ @@  @@    @@@@
-   @@@@@ @@  @@    @@@@ Copyright (c) 2023, Acceleration Robotics®
-   @@@@@ @@  @@    @@@@ Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
-   @@@@@ @@  @@    @@@@ 
-   @@@@@@@@@&@@@@@@@@@@
-   @@@@@@@@@@@@@@@@@@@@
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. 
-*/
-
-/*
+    Modification Copyright (c) 2023, Acceleration Robotics®
+    Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+    Based on:
       ____  ____
      /   /\/   /
     /___/  \  /   Copyright (c) 2021, Xilinx®.
@@ -122,22 +101,29 @@ ResizeNodeFPGA::ResizeNodeFPGA(const rclcpp::NodeOptions & options)
   OCL_CHECK(err, krnl_ = new cl::Kernel(program, "resize_accel", &err));
 }
 
-void ResizeNodeFPGA::imageCb(
-  sensor_msgs::msg::Image::ConstSharedPtr image_msg,
-  sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg)
-{
-    //Serialize the Image and CameraInfo messages
+size_t ResizeNodeFPGA::get_msg_size(sensor_msgs::msg::Image::ConstSharedPtr image_msg){
+  //Serialize the Image and CameraInfo messages
   rclcpp::SerializedMessage serialized_data_img;
   rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
   const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
   image_serialization.serialize_message(image_ptr, &serialized_data_img);
   size_t image_msg_size = serialized_data_img.size();
-  
+  return image_msg_size;
+}
+
+size_t ResizeNodeFPGA::get_msg_size(sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg){
   rclcpp::SerializedMessage serialized_data_info;
   rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
   const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
   info_serialization.serialize_message(info_ptr, &serialized_data_info);
   size_t info_msg_size = serialized_data_info.size();
+  return info_msg_size;
+}
+
+void ResizeNodeFPGA::imageCb(
+  sensor_msgs::msg::Image::ConstSharedPtr image_msg,
+  sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg)
+{
   
   TRACEPOINT(
     image_proc_resize_cb_init,
@@ -146,8 +132,8 @@ void ResizeNodeFPGA::imageCb(
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
     image_msg->header.stamp.sec,
-    image_msg_size,
-    info_msg_size);
+    get_msg_size(image_msg),
+    get_msg_size(info_msg));
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
@@ -157,8 +143,8 @@ void ResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
       image_msg->header.stamp.sec,
-      image_msg_size,
-      info_msg_size);
+      get_msg_size(image_msg),
+      get_msg_size(info_msg));
     return;
   }
 
@@ -183,8 +169,8 @@ void ResizeNodeFPGA::imageCb(
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
       image_msg->header.stamp.sec,
-      image_msg_size,
-      info_msg_size);
+      get_msg_size(image_msg),
+      get_msg_size(info_msg));
     return;
   }
 
@@ -328,19 +314,6 @@ void ResizeNodeFPGA::imageCb(
 
   pub_image_.publish(*output_image.toImageMsg(), *dst_info_msg);
 
-  //Serialize the Image and CameraInfo messages
-  rclcpp::SerializedMessage serialized_data_out;
-  rclcpp::Serialization<sensor_msgs::msg::Image> out_image_serialization;
-  const void* out_image_ptr = reinterpret_cast<const void*>(output_image.toImageMsg().get());
-  out_image_serialization.serialize_message(out_image_ptr, &serialized_data_out);
-  size_t out_msg_size = serialized_data_out.size();
-  
-  rclcpp::SerializedMessage serialized_data_dst_info;
-  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> dst_info_serialization;
-  const void* dst_info_ptr = reinterpret_cast<const void*>(dst_info_msg.get());
-  dst_info_serialization.serialize_message(dst_info_ptr, &serialized_data_dst_info);
-  size_t dst_info_msg_size = serialized_data_dst_info.size();
-
 
   TRACEPOINT(
     image_proc_resize_cb_fini,
@@ -349,8 +322,8 @@ void ResizeNodeFPGA::imageCb(
     static_cast<const void *>(&(*dst_info_msg)),
     image_msg->header.stamp.nanosec,
     image_msg->header.stamp.sec,
-    out_msg_size,
-    dst_info_msg_size);
+    get_msg_size(output_image.toImageMsg()),
+    get_msg_size(dst_info_msg));
 
   // ///////////////////////////
   // // Validate, profile and benchmark

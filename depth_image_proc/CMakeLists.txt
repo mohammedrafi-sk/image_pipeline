@@ -36,6 +36,8 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/register.cpp
 )
 
+ament_target_dependencies(${PROJECT_NAME} tracetools_image_pipeline)
+
 rclcpp_components_register_nodes(${PROJECT_NAME}
   "${PROJECT_NAME}::ConvertMetricNode"
   "${PROJECT_NAME}::CropForemostNode"

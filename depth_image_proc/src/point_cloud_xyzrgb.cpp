@@ -35,6 +35,7 @@
 #include <mutex>
 #include <string>
 
+#include "tracetools_image_pipeline/tracetools.h"
 #include "cv_bridge/cv_bridge.h"
 
 #include <depth_image_proc/conversions.hpp>
@@ -124,6 +125,16 @@ void PointCloudXyzrgbNode::imageCb(
   const Image::ConstSharedPtr & rgb_msg_in,
   const CameraInfo::ConstSharedPtr & info_msg)
 {
+
+  TRACEPOINT(
+    depth_image_proc_transform_to_pointcloud_cb_init,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*depth_msg)),
+    static_cast<const void *>(&(*rgb_msg_in)),
+    static_cast<const void *>(&(*info_msg)),
+    rgb_msg_in->header.stamp.nanosec,
+    rgb_msg_in->header.stamp.sec);
+
   // Check for bad inputs
   if (depth_msg->header.frame_id != rgb_msg_in->header.frame_id) {
     RCLCPP_WARN_THROTTLE(
@@ -159,6 +170,16 @@ void PointCloudXyzrgbNode::imageCb(
       cv_ptr = cv_bridge::toCvShare(rgb_msg, rgb_msg->encoding);
     } catch (cv_bridge::Exception & e) {
       RCLCPP_ERROR(get_logger(), "cv_bridge exception: %s", e.what());
+
+      TRACEPOINT(
+        depth_image_proc_transform_to_pointcloud_cb_fini,
+        static_cast<const void *>(this),
+        static_cast<const void *>(&(*depth_msg)),
+        static_cast<const void *>(&(*rgb_msg_in)),
+        static_cast<const void *>(&(*info_msg)),
+        rgb_msg_in->header.stamp.nanosec,
+        rgb_msg_in->header.stamp.sec);
+
       return;
     }
     cv_bridge::CvImage cv_rsz;
@@ -180,6 +201,16 @@ void PointCloudXyzrgbNode::imageCb(
     RCLCPP_ERROR(
       get_logger(), "Depth resolution (%ux%u) does not match RGB resolution (%ux%u)",
       depth_msg->width, depth_msg->height, rgb_msg->width, rgb_msg->height);
+
+    TRACEPOINT(
+        depth_image_proc_transform_to_pointcloud_cb_fini,
+        static_cast<const void *>(this),
+        static_cast<const void *>(&(*depth_msg)),
+        static_cast<const void *>(&(*rgb_msg_in)),
+        static_cast<const void *>(&(*info_msg)),
+        rgb_msg_in->header.stamp.nanosec,
+        rgb_msg_in->header.stamp.sec);
+  
     return;
   } else {
     rgb_msg = rgb_msg_in;
@@ -208,6 +239,16 @@ void PointCloudXyzrgbNode::imageCb(
     } catch (cv_bridge::Exception & e) {
       RCLCPP_ERROR(
         get_logger(), "Unsupported encoding [%s]: %s", rgb_msg->encoding.c_str(), e.what());
+
+      TRACEPOINT(
+        depth_image_proc_transform_to_pointcloud_cb_fini,
+        static_cast<const void *>(this),
+        static_cast<const void *>(&(*depth_msg)),
+        static_cast<const void *>(&(*rgb_msg_in)),
+        static_cast<const void *>(&(*info_msg)),
+        rgb_msg_in->header.stamp.nanosec,
+        rgb_msg_in->header.stamp.sec);
+
       return;
     }
     red_offset = 0;
@@ -215,6 +256,15 @@ void PointCloudXyzrgbNode::imageCb(
     blue_offset = 2;
     color_step = 3;
   }
+
+  TRACEPOINT(
+    depth_image_proc_transform_to_pointcloud_init,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*depth_msg)),
+    static_cast<const void *>(&(*rgb_msg_in)),
+    static_cast<const void *>(&(*info_msg)),
+    rgb_msg_in->header.stamp.nanosec,
+    rgb_msg_in->header.stamp.sec);
 
   auto cloud_msg = std::make_shared<PointCloud2>();
   cloud_msg->header = depth_msg->header;  // Use depth image time stamp
@@ -234,6 +284,25 @@ void PointCloudXyzrgbNode::imageCb(
   } else {
     RCLCPP_ERROR(
       get_logger(), "Depth image has unsupported encoding [%s]", depth_msg->encoding.c_str());
+
+    TRACEPOINT(
+      depth_image_proc_transform_to_pointcloud_fini,
+      static_cast<const void *>(this),
+      static_cast<const void *>(&(*depth_msg)),
+      static_cast<const void *>(&(*rgb_msg_in)),
+      static_cast<const void *>(&(*info_msg)),
+      rgb_msg_in->header.stamp.nanosec,
+      rgb_msg_in->header.stamp.sec);
+
+    TRACEPOINT(
+        depth_image_proc_transform_to_pointcloud_cb_fini,
+        static_cast<const void *>(this),
+        static_cast<const void *>(&(*depth_msg)),
+        static_cast<const void *>(&(*rgb_msg_in)),
+        static_cast<const void *>(&(*info_msg)),
+        rgb_msg_in->header.stamp.nanosec,
+        rgb_msg_in->header.stamp.sec);
+
     return;
   }
 
@@ -247,10 +316,47 @@ void PointCloudXyzrgbNode::imageCb(
   } else {
     RCLCPP_ERROR(
       get_logger(), "RGB image has unsupported encoding [%s]", rgb_msg->encoding.c_str());
+
+    TRACEPOINT(
+      depth_image_proc_transform_to_pointcloud_fini,
+      static_cast<const void *>(this),
+      static_cast<const void *>(&(*depth_msg)),
+      static_cast<const void *>(&(*rgb_msg_in)),
+      static_cast<const void *>(&(*info_msg)),
+      rgb_msg_in->header.stamp.nanosec,
+      rgb_msg_in->header.stamp.sec);
+
+    TRACEPOINT(
+      depth_image_proc_transform_to_pointcloud_cb_fini,
+      static_cast<const void *>(this),
+      static_cast<const void *>(&(*depth_msg)),
+      static_cast<const void *>(&(*rgb_msg_in)),
+      static_cast<const void *>(&(*info_msg)),
+      rgb_msg_in->header.stamp.nanosec,
+      rgb_msg_in->header.stamp.sec);
+
     return;
   }
 
+  TRACEPOINT(
+    depth_image_proc_transform_to_pointcloud_fini,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*depth_msg)),
+    static_cast<const void *>(&(*rgb_msg_in)),
+    static_cast<const void *>(&(*info_msg)),
+    rgb_msg_in->header.stamp.nanosec,
+    rgb_msg_in->header.stamp.sec);
+
   pub_point_cloud_->publish(*cloud_msg);
+
+  TRACEPOINT(
+    depth_image_proc_transform_to_pointcloud_cb_fini,
+    static_cast<const void *>(this),
+    static_cast<const void *>(&(*depth_msg)),
+    static_cast<const void *>(&(*rgb_msg_in)),
+    static_cast<const void *>(&(*info_msg)),
+    rgb_msg_in->header.stamp.nanosec,
+    rgb_msg_in->header.stamp.sec);
 }
 
 }  // namespace depth_image_proc

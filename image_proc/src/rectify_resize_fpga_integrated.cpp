@@ -346,7 +346,7 @@ void RectifyResizeNodeFPGA::imageCb(
   } catch (cv_bridge::Exception & e) {
     RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     TRACEPOINT(
-      image_proc_resize_cb_fini,
+      image_proc_rectify_cb_fini,
       static_cast<const void *>(this),
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),

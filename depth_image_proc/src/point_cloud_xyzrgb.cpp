@@ -132,8 +132,8 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*depth_msg)),
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
-    rgb_msg_in->header.stamp.nanosec,
-    rgb_msg_in->header.stamp.sec);
+    depth_msg->header.stamp.nanosec,
+    depth_msg->header.stamp.sec);
 
   // Check for bad inputs
   if (depth_msg->header.frame_id != rgb_msg_in->header.frame_id) {
@@ -177,8 +177,8 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*depth_msg)),
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
-        rgb_msg_in->header.stamp.nanosec,
-        rgb_msg_in->header.stamp.sec);
+        depth_msg->header.stamp.nanosec,
+        depth_msg->header.stamp.sec);
 
       return;
     }
@@ -208,8 +208,8 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*depth_msg)),
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
-        rgb_msg_in->header.stamp.nanosec,
-        rgb_msg_in->header.stamp.sec);
+        depth_msg->header.stamp.nanosec,
+        depth_msg->header.stamp.sec);
   
     return;
   } else {
@@ -246,8 +246,8 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*depth_msg)),
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
-        rgb_msg_in->header.stamp.nanosec,
-        rgb_msg_in->header.stamp.sec);
+        depth_msg->header.stamp.nanosec,
+        depth_msg->header.stamp.sec);
 
       return;
     }
@@ -263,8 +263,8 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*depth_msg)),
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
-    rgb_msg_in->header.stamp.nanosec,
-    rgb_msg_in->header.stamp.sec);
+    depth_msg->header.stamp.nanosec,
+    depth_msg->header.stamp.sec);
 
   auto cloud_msg = std::make_shared<PointCloud2>();
   cloud_msg->header = depth_msg->header;  // Use depth image time stamp
@@ -291,8 +291,8 @@ void PointCloudXyzrgbNode::imageCb(
       static_cast<const void *>(&(*depth_msg)),
       static_cast<const void *>(&(*rgb_msg_in)),
       static_cast<const void *>(&(*info_msg)),
-      rgb_msg_in->header.stamp.nanosec,
-      rgb_msg_in->header.stamp.sec);
+      depth_msg->header.stamp.nanosec,
+      depth_msg->header.stamp.sec);
 
     TRACEPOINT(
         depth_image_proc_transform_to_pointcloud_cb_fini,
@@ -300,8 +300,8 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*depth_msg)),
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
-        rgb_msg_in->header.stamp.nanosec,
-        rgb_msg_in->header.stamp.sec);
+        depth_msg->header.stamp.nanosec,
+        depth_msg->header.stamp.sec);
 
     return;
   }
@@ -323,8 +323,8 @@ void PointCloudXyzrgbNode::imageCb(
       static_cast<const void *>(&(*depth_msg)),
       static_cast<const void *>(&(*rgb_msg_in)),
       static_cast<const void *>(&(*info_msg)),
-      rgb_msg_in->header.stamp.nanosec,
-      rgb_msg_in->header.stamp.sec);
+      depth_msg->header.stamp.nanosec,
+      depth_msg->header.stamp.sec);
 
     TRACEPOINT(
       depth_image_proc_transform_to_pointcloud_cb_fini,
@@ -332,8 +332,8 @@ void PointCloudXyzrgbNode::imageCb(
       static_cast<const void *>(&(*depth_msg)),
       static_cast<const void *>(&(*rgb_msg_in)),
       static_cast<const void *>(&(*info_msg)),
-      rgb_msg_in->header.stamp.nanosec,
-      rgb_msg_in->header.stamp.sec);
+      depth_msg->header.stamp.nanosec,
+      depth_msg->header.stamp.sec);
 
     return;
   }
@@ -344,8 +344,8 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*depth_msg)),
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
-    rgb_msg_in->header.stamp.nanosec,
-    rgb_msg_in->header.stamp.sec);
+    depth_msg->header.stamp.nanosec,
+    depth_msg->header.stamp.sec);
 
   pub_point_cloud_->publish(*cloud_msg);
 
@@ -355,8 +355,8 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*depth_msg)),
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
-    rgb_msg_in->header.stamp.nanosec,
-    rgb_msg_in->header.stamp.sec);
+    depth_msg->header.stamp.nanosec,
+    depth_msg->header.stamp.sec);
 }
 
 }  // namespace depth_image_proc

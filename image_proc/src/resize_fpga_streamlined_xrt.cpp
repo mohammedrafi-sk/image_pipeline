@@ -1,4 +1,7 @@
 /*
+    Modification Copyright (c) 2023, Acceleration Robotics®
+    Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+    Based on:
       ____  ____
      /   /\/   /
     /___/  \  /   Copyright (c) 2021, Xilinx®.
@@ -35,6 +38,7 @@
 #include "image_proc/xf_resize_config.h"
 #include "image_proc/resize_fpga_streamlined_xrt.hpp"
 #include "tracetools_image_pipeline/tracetools.h"
+#include <rclcpp/serialization.hpp>
 
 namespace image_proc
 {
@@ -70,10 +74,30 @@ ResizeNodeFPGAStreamlinedXRT::ResizeNodeFPGAStreamlinedXRT(const rclcpp::NodeOpt
   krnl_resize = xrt::kernel(device, uuid, "resize_accel_streamlined");
 }
 
+size_t ResizeNodeFPGAStreamlinedXRT::get_msg_size(sensor_msgs::msg::Image::ConstSharedPtr image_msg){
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
+  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
+  image_serialization.serialize_message(image_ptr, &serialized_data_img);
+  size_t image_msg_size = serialized_data_img.size();
+  return image_msg_size;
+}
+
+size_t ResizeNodeFPGAStreamlinedXRT::get_msg_size(sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg){
+  rclcpp::SerializedMessage serialized_data_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
+  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
+  info_serialization.serialize_message(info_ptr, &serialized_data_info);
+  size_t info_msg_size = serialized_data_info.size();
+  return info_msg_size;
+}
+
 void ResizeNodeFPGAStreamlinedXRT::imageCb(
   sensor_msgs::msg::Image::ConstSharedPtr image_msg,
   sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg)
 {
+ 
   // std::cout << "ResizeNodeFPGAStreamlinedXRT::imageCb XRT" << std::endl;
   TRACEPOINT(
     image_proc_resize_cb_init,
@@ -81,7 +105,9 @@ void ResizeNodeFPGAStreamlinedXRT::imageCb(
     static_cast<const void *>(&(*image_msg)),
     static_cast<const void *>(&(*info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    get_msg_size(image_msg),
+    get_msg_size(info_msg));
 
   if (pub_image_.getNumSubscribers() < 1) {
     TRACEPOINT(
@@ -90,7 +116,9 @@ void ResizeNodeFPGAStreamlinedXRT::imageCb(
       static_cast<const void *>(&(*image_msg)),
       static_cast<const void *>(&(*info_msg)),
       image_msg->header.stamp.nanosec,
-      image_msg->header.stamp.sec);
+      image_msg->header.stamp.sec,
+      get_msg_size(image_msg),
+      get_msg_size(info_msg));
     return;
   }
 
@@ -229,13 +257,16 @@ void ResizeNodeFPGAStreamlinedXRT::imageCb(
 
   pub_image_.publish(*output_image.toImageMsg(), *dst_info_msg);
 
+
   TRACEPOINT(
     image_proc_resize_cb_fini,
     static_cast<const void *>(this),
-    static_cast<const void *>(&(*image_msg)),
-    static_cast<const void *>(&(*info_msg)),
+    static_cast<const void *>(&(*output_image.toImageMsg())),
+    static_cast<const void *>(&(*dst_info_msg)),
     image_msg->header.stamp.nanosec,
-    image_msg->header.stamp.sec);
+    image_msg->header.stamp.sec,
+    get_msg_size(output_image.toImageMsg()),
+    get_msg_size(dst_info_msg));
 }
 
 }  // namespace image_proc

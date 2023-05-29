@@ -38,7 +38,7 @@
 #include "image_proc/xf_resize_config.h"
 #include "image_proc/resize_fpga_streamlined.hpp"
 #include "tracetools_image_pipeline/tracetools.h"
-
+#include <rclcpp/serialization.hpp>
 
 // // Forward declaration of utility functions included at the end of this file
 // std::vector<cl::Device> get_xilinx_devices();

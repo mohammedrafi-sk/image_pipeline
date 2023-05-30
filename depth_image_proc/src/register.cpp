@@ -29,32 +29,35 @@
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
+
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <mutex>
+
+#include "Eigen/Geometry"
+#include "depth_image_proc/visibility.h"
+#include "image_geometry/pinhole_camera_model.h"
+#include "message_filters/subscriber.h"
+#include "message_filters/synchronizer.h"
+#include "message_filters/sync_policies/approximate_time.h"
+#include "tf2_ros/buffer.h"
+#include "tf2_ros/transform_listener.h"
+
 #include <rclcpp/rclcpp.hpp>
 #include <image_transport/image_transport.hpp>
 #include <image_transport/subscriber_filter.hpp>
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
 #include <sensor_msgs/image_encodings.hpp>
-#include <image_geometry/pinhole_camera_model.h>
-#include <Eigen/Geometry>
-#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <depth_image_proc/depth_traits.hpp>
-#include <depth_image_proc/visibility.h>
-#include <memory>
 
 namespace depth_image_proc
 {
 
-using namespace std::placeholders;
-namespace enc = sensor_msgs::image_encodings;
-
 class RegisterNode : public rclcpp::Node
 {
 public:
-  DEPTH_IMAGE_PROC_PUBLIC RegisterNode();
+  DEPTH_IMAGE_PROC_PUBLIC RegisterNode(const rclcpp::NodeOptions & options);
 
 private:
   using Image = sensor_msgs::msg::Image;
@@ -77,6 +80,9 @@ private:
 
   image_geometry::PinholeCameraModel depth_model_, rgb_model_;
 
+  // Parameters
+  bool fill_upsampling_holes_;
+
   void connectCb();
 
   void imageCb(
@@ -89,12 +95,10 @@ private:
     const Image::ConstSharedPtr & depth_msg,
     const Image::SharedPtr & registered_msg,
     const Eigen::Affine3d & depth_to_rgb);
-
-  rclcpp::Logger logger_ = rclcpp::get_logger("RegisterNode");
 };
 
-RegisterNode::RegisterNode()
-: Node("RegisterNode")
+RegisterNode::RegisterNode(const rclcpp::NodeOptions & options)
+: rclcpp::Node("RegisterNode", options)
 {
   rclcpp::Clock::SharedPtr clock = this->get_clock();
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>(clock);
@@ -102,6 +106,7 @@ RegisterNode::RegisterNode()
 
   // Read parameters
   int queue_size = this->declare_parameter<int>("queue_size", 5);
+  fill_upsampling_holes_ = this->declare_parameter<bool>("fill_upsampling_holes", false);
 
   // Synchronize inputs. Topic subscriptions happen on demand in the connection callback.
   sync_ = std::make_shared<Synchronizer>(
@@ -109,7 +114,10 @@ RegisterNode::RegisterNode()
     sub_depth_image_,
     sub_depth_info_,
     sub_rgb_info_);
-  sync_->registerCallback(std::bind(&RegisterNode::imageCb, this, _1, _2, _3));
+  sync_->registerCallback(
+    std::bind(
+      &RegisterNode::imageCb, this, std::placeholders::_1,
+      std::placeholders::_2, std::placeholders::_3));
 
   // Monitor whether anyone is subscribed to the output
   // TODO(ros2) Implement when SubscriberStatusCallback is available
@@ -165,7 +173,7 @@ void RegisterNode::imageCb(
 
     depth_to_rgb = tf2::transformToEigen(transform);
   } catch (tf2::TransformException & ex) {
-    RCLCPP_ERROR(logger_, "TF2 exception:\n%s", ex.what());
+    RCLCPP_ERROR(get_logger(), "TF2 exception:\n%s", ex.what());
     return;
     /// @todo Can take on order of a minute to register a disconnect callback when we
     /// don't call publish() in this cb. What's going on roscpp?
@@ -181,13 +189,13 @@ void RegisterNode::imageCb(
   registered_msg->width = resolution.width;
   // step and data set in convert(), depend on depth data type
 
-  if (depth_image_msg->encoding == enc::TYPE_16UC1) {
+  if (depth_image_msg->encoding == sensor_msgs::image_encodings::TYPE_16UC1) {
     convert<uint16_t>(depth_image_msg, registered_msg, depth_to_rgb);
-  } else if (depth_image_msg->encoding == enc::TYPE_32FC1) {
+  } else if (depth_image_msg->encoding == sensor_msgs::image_encodings::TYPE_32FC1) {
     convert<float>(depth_image_msg, registered_msg, depth_to_rgb);
   } else {
     RCLCPP_ERROR(
-      logger_, "Depth image has unsupported encoding [%s]",
+      get_logger(), "Depth image has unsupported encoding [%s]",
       depth_image_msg->encoding.c_str());
     return;
   }
@@ -237,33 +245,75 @@ void RegisterNode::convert(
 
       double depth = DepthTraits<T>::toMeters(raw_depth);
 
-      /// @todo Combine all operations into one matrix multiply on (u,v,d)
-      // Reproject (u,v,Z) to (X,Y,Z,1) in depth camera frame
-      Eigen::Vector4d xyz_depth;
-      xyz_depth << ((u - depth_cx) * depth - depth_Tx) * inv_depth_fx,
-      ((v - depth_cy) * depth - depth_Ty) * inv_depth_fy,
-        depth,
-        1;
+      if (fill_upsampling_holes_ == false) {
+        /// @todo Combine all operations into one matrix multiply on (u,v,d)
+        // Reproject (u,v,Z) to (X,Y,Z,1) in depth camera frame
+        Eigen::Vector4d xyz_depth;
+        xyz_depth << ((u - depth_cx) * depth - depth_Tx) * inv_depth_fx,
+          ((v - depth_cy) * depth - depth_Ty) * inv_depth_fy,
+          depth,
+          1;
 
-      // Transform to RGB camera frame
-      Eigen::Vector4d xyz_rgb = depth_to_rgb * xyz_depth;
+        // Transform to RGB camera frame
+        Eigen::Vector4d xyz_rgb = depth_to_rgb * xyz_depth;
 
-      // Project to (u,v) in RGB image
-      double inv_Z = 1.0 / xyz_rgb.z();
-      int u_rgb = (rgb_fx * xyz_rgb.x() + rgb_Tx) * inv_Z + rgb_cx + 0.5;
-      int v_rgb = (rgb_fy * xyz_rgb.y() + rgb_Ty) * inv_Z + rgb_cy + 0.5;
+        // Project to (u,v) in RGB image
+        double inv_Z = 1.0 / xyz_rgb.z();
+        int u_rgb = (rgb_fx * xyz_rgb.x() + rgb_Tx) * inv_Z + rgb_cx + 0.5;
+        int v_rgb = (rgb_fy * xyz_rgb.y() + rgb_Ty) * inv_Z + rgb_cy + 0.5;
 
-      if (u_rgb < 0 || u_rgb >= static_cast<int>(registered_msg->width) ||
-        v_rgb < 0 || v_rgb >= static_cast<int>(registered_msg->height))
-      {
-        continue;
-      }
+        if (u_rgb < 0 || u_rgb >= static_cast<int>(registered_msg->width) ||
+          v_rgb < 0 || v_rgb >= static_cast<int>(registered_msg->height))
+        {
+          continue;
+        }
 
-      T & reg_depth = registered_data[v_rgb * registered_msg->width + u_rgb];
-      T new_depth = DepthTraits<T>::fromMeters(xyz_rgb.z());
-      // Validity and Z-buffer checks
-      if (!DepthTraits<T>::valid(reg_depth) || reg_depth > new_depth) {
-        reg_depth = new_depth;
+        T & reg_depth = registered_data[v_rgb * registered_msg->width + u_rgb];
+        T new_depth = DepthTraits<T>::fromMeters(xyz_rgb.z());
+        // Validity and Z-buffer checks
+        if (!DepthTraits<T>::valid(reg_depth) || reg_depth > new_depth) {
+          reg_depth = new_depth;
+        }
+      } else {
+        // Reproject (u,v,Z) to (X,Y,Z,1) in depth camera frame
+        Eigen::Vector4d xyz_depth_1, xyz_depth_2;
+        xyz_depth_1 << ((u - 0.5f - depth_cx) * depth - depth_Tx) * inv_depth_fx,
+          ((v - 0.5f - depth_cy) * depth - depth_Ty) * inv_depth_fy,
+          depth,
+          1;
+        xyz_depth_2 << ((u + 0.5f - depth_cx) * depth - depth_Tx) * inv_depth_fx,
+          ((v + 0.5f - depth_cy) * depth - depth_Ty) * inv_depth_fy,
+          depth,
+          1;
+
+        // Transform to RGB camera frame
+        Eigen::Vector4d xyz_rgb_1 = depth_to_rgb * xyz_depth_1;
+        Eigen::Vector4d xyz_rgb_2 = depth_to_rgb * xyz_depth_2;
+
+        // Project to (u,v) in RGB image
+        double inv_Z = 1.0 / xyz_rgb_1.z();
+        int u_rgb_1 = (rgb_fx * xyz_rgb_1.x() + rgb_Tx) * inv_Z + rgb_cx + 0.5;
+        int v_rgb_1 = (rgb_fy * xyz_rgb_1.y() + rgb_Ty) * inv_Z + rgb_cy + 0.5;
+        inv_Z = 1.0 / xyz_rgb_2.z();
+        int u_rgb_2 = (rgb_fx * xyz_rgb_2.x() + rgb_Tx) * inv_Z + rgb_cx + 0.5;
+        int v_rgb_2 = (rgb_fy * xyz_rgb_2.y() + rgb_Ty) * inv_Z + rgb_cy + 0.5;
+
+        if (u_rgb_1 < 0 || u_rgb_2 >= static_cast<int>(registered_msg->width) ||
+          v_rgb_1 < 0 || v_rgb_2 >= static_cast<int>(registered_msg->height))
+        {
+          continue;
+        }
+
+        for (int nv = v_rgb_1; nv <= v_rgb_2; ++nv) {
+          for (int nu = u_rgb_1; nu <= u_rgb_2; ++nu) {
+            T & reg_depth = registered_data[nv * registered_msg->width + nu];
+            T new_depth = DepthTraits<T>::fromMeters(0.5 * (xyz_rgb_1.z() + xyz_rgb_2.z()));
+            // Validity and Z-buffer checks
+            if (!DepthTraits<T>::valid(reg_depth) || reg_depth > new_depth) {
+              reg_depth = new_depth;
+            }
+          }
+        }
       }
     }
   }
@@ -271,7 +321,7 @@ void RegisterNode::convert(
 
 }  // namespace depth_image_proc
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 // Register the component with class_loader.
-CLASS_LOADER_REGISTER_CLASS(depth_image_proc::RegisterNode, rclcpp::Node)
+RCLCPP_COMPONENTS_REGISTER_NODE(depth_image_proc::RegisterNode)

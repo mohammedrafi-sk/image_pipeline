@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>depth_image_proc</name>
-  <version>2.2.1</version>
+  <version>3.0.0</version>
   <description>
 
      Contains components for processing depth images such as those
@@ -25,12 +25,13 @@
 
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
-  <build_depend>message_filters</build_depend>
   <build_depend>class_loader</build_depend>
 
   <depend>cv_bridge</depend>
   <depend>image_geometry</depend>
   <depend>image_transport</depend>
+  <depend>libopencv-dev</depend>
+  <depend>message_filters</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
   <depend>sensor_msgs</depend>
@@ -38,6 +39,7 @@
   <depend>tf2</depend>
   <depend>tf2_eigen</depend>
   <depend>tf2_ros</depend>
+  <depend>tracetools_image_pipeline</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

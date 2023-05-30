@@ -1,3 +1,7 @@
+/* Modification Copyright (c) 2023, Acceleration Robotics®
+   Author: Alejandra Martínez Fariña <alex@accelerationrobotics.com>
+   Based on:
+*/
 // Copyright 2008, 2019 Willow Garage, Inc., Andreas Klintberg, Joshua Whitley
 // All rights reserved.
 //
@@ -64,6 +68,9 @@ private:
   image_geometry::PinholeCameraModel model_;
 
   void subscribeToCamera();
+  size_t get_msg_size(sensor_msgs::msg::Image::ConstSharedPtr image_msg);
+  size_t get_msg_size(sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg);
+
   void imageCb(
     const sensor_msgs::msg::Image::ConstSharedPtr & image_msg,
     const sensor_msgs::msg::CameraInfo::ConstSharedPtr & info_msg);

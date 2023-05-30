@@ -344,7 +344,10 @@ void TRACEPOINT(
   const void * point_cloud_xyzrgb_rgb_image_msg_arg,
   const void * point_cloud_xyzrgb_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t point_cloud_xyzrgb_depth_msg_size_arg,
+  size_t point_cloud_xyzrgb_rgb_msg_size_arg,
+  size_t point_cloud_xyzrgb_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     depth_image_proc_transform_to_pointcloud_cb_init,
@@ -353,7 +356,10 @@ void TRACEPOINT(
     point_cloud_xyzrgb_rgb_image_msg_arg,
     point_cloud_xyzrgb_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    point_cloud_xyzrgb_depth_msg_size_arg,
+    point_cloud_xyzrgb_rgb_msg_size_arg,
+    point_cloud_xyzrgb_info_msg_size_arg);
 }
 
 void TRACEPOINT(
@@ -363,7 +369,10 @@ void TRACEPOINT(
   const void * point_cloud_xyzrgb_rgb_image_msg_arg,
   const void * point_cloud_xyzrgb_info_msg_arg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t point_cloud_xyzrgb_depth_msg_size_arg,
+  size_t point_cloud_xyzrgb_rgb_msg_size_arg,
+  size_t point_cloud_xyzrgb_info_msg_size_arg)
 {
   CONDITIONAL_TP(
     depth_image_proc_transform_to_pointcloud_cb_fini,
@@ -372,7 +381,10 @@ void TRACEPOINT(
     point_cloud_xyzrgb_rgb_image_msg_arg,
     point_cloud_xyzrgb_info_msg_arg,
     image_input_header_nsec_arg,
-    image_input_header_sec_arg);
+    image_input_header_sec_arg,
+    point_cloud_xyzrgb_depth_msg_size_arg,
+    point_cloud_xyzrgb_rgb_msg_size_arg,
+    point_cloud_xyzrgb_info_msg_size_arg);
 }
 
 void TRACEPOINT(

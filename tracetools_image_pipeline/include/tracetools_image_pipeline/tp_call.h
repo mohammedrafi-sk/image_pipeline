@@ -378,7 +378,10 @@ TRACEPOINT_EVENT(
     const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
     const void *, point_cloud_xyzrgb_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg),
+    uint32_t, image_input_header_sec_arg,
+    size_t, point_cloud_xyzrgb_depth_msg_size_arg,
+    size_t, point_cloud_xyzrgb_rgb_msg_size_arg,
+    size_t, point_cloud_xyzrgb_info_msg_size_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
     ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
@@ -386,6 +389,9 @@ TRACEPOINT_EVENT(
     ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_depth_msg_size, point_cloud_xyzrgb_depth_msg_size_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_rgb_msg_size, point_cloud_xyzrgb_rgb_msg_size_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_info_msg_size, point_cloud_xyzrgb_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )
@@ -399,7 +405,10 @@ TRACEPOINT_EVENT(
     const void *, point_cloud_xyzrgb_rgb_image_msg_arg,
     const void *, point_cloud_xyzrgb_info_msg_arg,
     uint32_t, image_input_header_nsec_arg,
-    uint32_t, image_input_header_sec_arg),
+    uint32_t, image_input_header_sec_arg,
+    size_t, point_cloud_xyzrgb_depth_msg_size_arg,
+    size_t, point_cloud_xyzrgb_rgb_msg_size_arg,
+    size_t, point_cloud_xyzrgb_info_msg_size_arg),
   TP_FIELDS(
     ctf_integer_hex(const void *, point_cloud_xyzrgb_node, point_cloud_xyzrgb_node_arg)
     ctf_integer_hex(const void *, point_cloud_xyzrgb_depth_image_msg, point_cloud_xyzrgb_depth_image_msg_arg)
@@ -407,6 +416,9 @@ TRACEPOINT_EVENT(
     ctf_integer_hex(const void *, point_cloud_xyzrgb_info_msg, point_cloud_xyzrgb_info_msg_arg)
     ctf_integer(uint32_t, image_input_header_nsec, image_input_header_nsec_arg)
     ctf_integer(uint32_t, image_input_header_sec, image_input_header_sec_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_depth_msg_size, point_cloud_xyzrgb_depth_msg_size_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_rgb_msg_size, point_cloud_xyzrgb_rgb_msg_size_arg)
+    ctf_integer(uint32_t, point_cloud_xyzrgb_info_msg_size, point_cloud_xyzrgb_info_msg_size_arg)
     ctf_string(version, tracetools_image_pipeline_VERSION)
   )
 )

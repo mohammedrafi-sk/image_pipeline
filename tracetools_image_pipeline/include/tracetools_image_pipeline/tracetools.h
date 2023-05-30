@@ -407,6 +407,9 @@ DECLARE_TRACEPOINT(
  * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ * \param[in] point_cloud_xyzrgb_depth_msg_size size of image ROS message stored as bytes
+ * \param[in] point_cloud_xyzrgb_rgb_msg_size size of image ROS message stored as bytes
+ * \param[in] point_cloud_xyzrgb_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   depth_image_proc_transform_to_pointcloud_cb_init,
@@ -415,7 +418,10 @@ DECLARE_TRACEPOINT(
   const void * point_cloud_xyzrgb_rgb_image_msg,
   const void * point_cloud_xyzrgb_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t point_cloud_xyzrgb_depth_msg_size,
+  size_t point_cloud_xyzrgb_rgb_msg_size,
+  size_t point_cloud_xyzrgb_info_msg_size)
 
 /// `depth_image_proc_transform_to_pointcloud_cb_fini`
 /**
@@ -429,6 +435,9 @@ DECLARE_TRACEPOINT(
  * \param[in] point_cloud_xyzrgb_info_msg info ROS message as sensor_msgs::msg::CameraInfo::ConstSharedPtr
  * \param[in] image_input_header_nsec_arg nanosec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message 
  * \param[in] image_input_header_sec_arg sec field of the header (std_msgs/Header) of sensor_msgs::msg::Image's ROS message  
+ * \param[in] point_cloud_xyzrgb_depth_msg_size size of image ROS message stored as bytes
+ * \param[in] point_cloud_xyzrgb_rgb_msg_size size of image ROS message stored as bytes
+ * \param[in] point_cloud_xyzrgb_info_msg_size size of info ROS message as bytes
  */
 DECLARE_TRACEPOINT(
   depth_image_proc_transform_to_pointcloud_cb_fini,
@@ -437,7 +446,10 @@ DECLARE_TRACEPOINT(
   const void * point_cloud_xyzrgb_rgb_image_msg,
   const void * point_cloud_xyzrgb_info_msg,
   uint32_t image_input_header_nsec_arg,
-  uint32_t image_input_header_sec_arg)
+  uint32_t image_input_header_sec_arg,
+  size_t point_cloud_xyzrgb_depth_msg_size,
+  size_t point_cloud_xyzrgb_rgb_msg_size,
+  size_t point_cloud_xyzrgb_info_msg_size)
 
 /// `depth_image_proc_transform_to_pointcloud_init`
 /**

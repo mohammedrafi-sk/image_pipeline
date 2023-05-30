@@ -87,6 +87,11 @@ private:
     const Image::ConstSharedPtr & depth_msg,
     const Image::ConstSharedPtr & rgb_msg,
     const CameraInfo::ConstSharedPtr & info_msg);
+
+  // Message serialization
+  size_t get_msg_size(sensor_msgs::msg::Image::ConstSharedPtr image_msg);
+  size_t get_msg_size(sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg);
+
 };
 
 }  // namespace depth_image_proc

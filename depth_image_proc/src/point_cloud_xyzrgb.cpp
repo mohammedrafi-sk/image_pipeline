@@ -43,6 +43,7 @@
 #include <image_transport/image_transport.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/serialization.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 
 namespace depth_image_proc
@@ -94,6 +95,25 @@ PointCloudXyzrgbNode::PointCloudXyzrgbNode(const rclcpp::NodeOptions & options)
   // TODO(ros2) Implement connect_cb when SubscriberStatusCallback is available
 }
 
+size_t PointCloudXyzrgbNode::get_msg_size(sensor_msgs::msg::Image::ConstSharedPtr image_msg){
+  //Serialize the Image and CameraInfo messages
+  rclcpp::SerializedMessage serialized_data_img;
+  rclcpp::Serialization<sensor_msgs::msg::Image> image_serialization;
+  const void* image_ptr = reinterpret_cast<const void*>(image_msg.get());
+  image_serialization.serialize_message(image_ptr, &serialized_data_img);
+  size_t image_msg_size = serialized_data_img.size();
+  return image_msg_size;
+}
+
+size_t PointCloudXyzrgbNode::get_msg_size(sensor_msgs::msg::CameraInfo::ConstSharedPtr info_msg){
+  rclcpp::SerializedMessage serialized_data_info;
+  rclcpp::Serialization<sensor_msgs::msg::CameraInfo> info_serialization;
+  const void* info_ptr = reinterpret_cast<const void*>(info_msg.get());
+  info_serialization.serialize_message(info_ptr, &serialized_data_info);
+  size_t info_msg_size = serialized_data_info.size();
+  return info_msg_size;
+}
+
 // Handles (un)subscribing when clients (un)subscribe
 void PointCloudXyzrgbNode::connectCb()
 {
@@ -133,7 +153,10 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
     depth_msg->header.stamp.nanosec,
-    depth_msg->header.stamp.sec);
+    depth_msg->header.stamp.sec,
+    get_msg_size(depth_msg),
+    get_msg_size(rgb_msg_in),
+    get_msg_size(info_msg));
 
   // Check for bad inputs
   if (depth_msg->header.frame_id != rgb_msg_in->header.frame_id) {
@@ -178,7 +201,10 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
         depth_msg->header.stamp.nanosec,
-        depth_msg->header.stamp.sec);
+        depth_msg->header.stamp.sec,
+        get_msg_size(depth_msg),
+        get_msg_size(rgb_msg_in),
+        get_msg_size(info_msg));
 
       return;
     }
@@ -209,7 +235,10 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
         depth_msg->header.stamp.nanosec,
-        depth_msg->header.stamp.sec);
+        depth_msg->header.stamp.sec,
+        get_msg_size(depth_msg),
+        get_msg_size(rgb_msg_in),
+        get_msg_size(info_msg));
   
     return;
   } else {
@@ -247,7 +276,10 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
         depth_msg->header.stamp.nanosec,
-        depth_msg->header.stamp.sec);
+        depth_msg->header.stamp.sec,
+        get_msg_size(depth_msg),
+        get_msg_size(rgb_msg_in),
+        get_msg_size(info_msg));
 
       return;
     }
@@ -301,7 +333,10 @@ void PointCloudXyzrgbNode::imageCb(
         static_cast<const void *>(&(*rgb_msg_in)),
         static_cast<const void *>(&(*info_msg)),
         depth_msg->header.stamp.nanosec,
-        depth_msg->header.stamp.sec);
+        depth_msg->header.stamp.sec,
+        get_msg_size(depth_msg),
+        get_msg_size(rgb_msg_in),
+        get_msg_size(info_msg));
 
     return;
   }
@@ -333,7 +368,10 @@ void PointCloudXyzrgbNode::imageCb(
       static_cast<const void *>(&(*rgb_msg_in)),
       static_cast<const void *>(&(*info_msg)),
       depth_msg->header.stamp.nanosec,
-      depth_msg->header.stamp.sec);
+      depth_msg->header.stamp.sec,
+      get_msg_size(depth_msg),
+      get_msg_size(rgb_msg_in),
+      get_msg_size(info_msg));
 
     return;
   }
@@ -356,7 +394,10 @@ void PointCloudXyzrgbNode::imageCb(
     static_cast<const void *>(&(*rgb_msg_in)),
     static_cast<const void *>(&(*info_msg)),
     depth_msg->header.stamp.nanosec,
-    depth_msg->header.stamp.sec);
+    depth_msg->header.stamp.sec,
+    get_msg_size(depth_msg),
+    get_msg_size(rgb_msg_in),
+    get_msg_size(info_msg));
 }
 
 }  // namespace depth_image_proc

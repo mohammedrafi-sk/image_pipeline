@@ -29,24 +29,26 @@
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-#include <image_geometry/stereo_camera_model.h>
-#include <image_transport/image_transport.hpp>
-#include <image_transport/subscriber_filter.hpp>
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
-#include <message_filters/sync_policies/exact_time.h>
-#include <rclcpp/rclcpp.hpp>
-#include <rclcpp_components/register_node_macro.hpp>
-#include <rcutils/logging_macros.h>
-#include <sensor_msgs/image_encodings.hpp>
-#include <sensor_msgs/msg/point_cloud2.hpp>
-#include <sensor_msgs/point_cloud2_iterator.hpp>
-#include <stereo_msgs/msg/disparity_image.hpp>
 
 #include <limits>
 #include <memory>
 #include <string>
+
+#include "image_geometry/stereo_camera_model.h"
+#include "message_filters/subscriber.h"
+#include "message_filters/synchronizer.h"
+#include "message_filters/sync_policies/approximate_time.h"
+#include "message_filters/sync_policies/exact_time.h"
+#include "rcutils/logging_macros.h"
+
+#include <image_transport/image_transport.hpp>
+#include <image_transport/subscriber_filter.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <rclcpp_components/register_node_macro.hpp>
+#include <sensor_msgs/image_encodings.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/point_cloud2_iterator.hpp>
+#include <stereo_msgs/msg/disparity_image.hpp>
 
 namespace stereo_image_proc
 {
@@ -130,7 +132,10 @@ PointCloudNode::PointCloudNode(const rclcpp::NodeOptions & options)
       std::bind(&PointCloudNode::imageCb, this, _1, _2, _3, _4));
   }
 
-  pub_points2_ = create_publisher<sensor_msgs::msg::PointCloud2>("points2", 1);
+  // Update the publisher options to allow reconfigurable qos settings.
+  rclcpp::PublisherOptions pub_opts;
+  pub_opts.qos_overriding_options = rclcpp::QosOverridingOptions::with_default_policies();
+  pub_points2_ = create_publisher<sensor_msgs::msg::PointCloud2>("points2", 1, pub_opts);
 
   // TODO(jacobperron): Replace this with a graph event.
   //                    Only subscribe if there's a subscription listening to our publisher.
@@ -148,10 +153,13 @@ void PointCloudNode::connectCb()
     image_sub_qos = rclcpp::SystemDefaultsQoS();
   }
   const auto image_sub_rmw_qos = image_sub_qos.get_rmw_qos_profile();
-  sub_l_image_.subscribe(this, "left/image_rect_color", hints.getTransport(), image_sub_rmw_qos);
-  sub_l_info_.subscribe(this, "left/camera_info", image_sub_rmw_qos);
-  sub_r_info_.subscribe(this, "right/camera_info", image_sub_rmw_qos);
-  sub_disparity_.subscribe(this, "disparity", image_sub_rmw_qos);
+  auto sub_opts = rclcpp::SubscriptionOptions();
+  sub_opts.qos_overriding_options = rclcpp::QosOverridingOptions::with_default_policies();
+  sub_l_image_.subscribe(
+    this, "left/image_rect_color", hints.getTransport(), image_sub_rmw_qos, sub_opts);
+  sub_l_info_.subscribe(this, "left/camera_info", image_sub_rmw_qos, sub_opts);
+  sub_r_info_.subscribe(this, "right/camera_info", image_sub_rmw_qos, sub_opts);
+  sub_disparity_.subscribe(this, "disparity", image_sub_rmw_qos, sub_opts);
 }
 
 inline bool isValidPoint(const cv::Vec3f & pt)
